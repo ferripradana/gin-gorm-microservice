@@ -9,7 +9,6 @@ type User struct {
 	FirstName    string    `json:"first_name"`
 	LastName     string    `json:"last_name"`
 	Status       bool      `json:"status"`
-	Role         string    `json:"role"`
 	HashPassword string    `json:"hash_password"`
 	CreatedAt    time.Time `json:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at"`
