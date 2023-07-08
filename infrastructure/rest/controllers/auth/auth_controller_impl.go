@@ -39,6 +39,17 @@ func (controller *AuthControllerImpl) Login(ctx *gin.Context) {
 }
 
 func (controller *AuthControllerImpl) GetAccessTokenByRefreshToken(ctx *gin.Context) {
-	//TODO implement me
-	panic("implement me")
+	var request AccessTokenRequest
+
+	if err := controllers.BindJSON(ctx, &request); err != nil {
+		_ = ctx.Error(err)
+		return
+	}
+
+	authDataUser, err := controller.AuthService.AccessTokenByRefreshToken(request.RefreshToken)
+	if err != nil {
+		_ = ctx.Error(err)
+		return
+	}
+	ctx.JSON(http.StatusOK, authDataUser)
 }
