@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"gin-gorm-microservice/infrastructure/repository/config"
+	"gin-gorm-microservice/infrastructure/rest/controllers/errors"
 	"gin-gorm-microservice/infrastructure/rest/routes"
 	limit "github.com/aviddiviner/gin-limit"
 	"github.com/gin-contrib/cors"
@@ -23,6 +24,7 @@ func main() {
 		_ = fmt.Errorf("fatal error in database file: #{err}")
 		panic(err)
 	}
+	router.Use(errors.Handler)
 	routes.ApplicationV1Router(router, db)
 	startServer(router)
 }

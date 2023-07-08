@@ -40,11 +40,13 @@ func (controller *MedicineControllerImpl) GetAllMedicines(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, medicines)
 }
 
+// @Failure 400 {object} MessageResponse
+// @Failure 500 {object} MessageResponse
 func (controller *MedicineControllerImpl) NewMedicine(ctx *gin.Context) {
 	var request NewMedicineRequest
 	if err := controllers.BindJSON(ctx, &request); err != nil {
-		appError := errors.NewAppErrorWithType(errors.ValidationError)
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": appError.Error()})
+		appError := errors.NewAppErrorImpl(err, errors.ValidationError)
+		_ = ctx.Error(appError)
 		return
 	}
 
@@ -57,7 +59,7 @@ func (controller *MedicineControllerImpl) NewMedicine(ctx *gin.Context) {
 
 	domainMedicine, err := controller.Service.Create(&newMedicine)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		_ = ctx.Error(err)
 		return
 	}
 
