@@ -1,6 +1,9 @@
 package medicine
 
-import "gin-gorm-microservice/infrastructure/repository/medicine"
+import (
+	medicineDomain "gin-gorm-microservice/domain/medicine"
+	"gin-gorm-microservice/infrastructure/repository/medicine"
+)
 
 type MedicineServiceImpl struct {
 	MedicineRepository medicine.MedicineRepository
@@ -26,4 +29,9 @@ func (service *MedicineServiceImpl) GetAll(page int64, limit int64) (*Pagination
 		PrevCursor: all.PrevCursor,
 		NumPages:   all.NumPages,
 	}, nil
+}
+
+func (service *MedicineServiceImpl) Create(medicine *NewMedicine) (*medicineDomain.Medicine, error) {
+	medicineToDomain := medicine.toDomainMapper()
+	return service.MedicineRepository.Create(medicineToDomain)
 }

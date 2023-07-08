@@ -2,6 +2,8 @@ package medicine
 
 import (
 	"gin-gorm-microservice/application/service/medicine"
+	"gin-gorm-microservice/domain/errors"
+	"gin-gorm-microservice/infrastructure/rest/controllers"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -36,4 +38,28 @@ func (controller *MedicineControllerImpl) GetAllMedicines(ctx *gin.Context) {
 		_ = ctx.Error(err)
 	}
 	ctx.JSON(http.StatusOK, medicines)
+}
+
+func (controller *MedicineControllerImpl) NewMedicine(ctx *gin.Context) {
+	var request NewMedicineRequest
+	if err := controllers.BindJSON(ctx, &request); err != nil {
+		appError := errors.NewAppErrorWithType(errors.ValidationError)
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": appError.Error()})
+		return
+	}
+
+	newMedicine := medicine.NewMedicine{
+		Name:        request.Name,
+		Description: request.Description,
+		EANCode:     request.EanCode,
+		Laboratory:  request.Laboratory,
+	}
+
+	domainMedicine, err := controller.Service.Create(&newMedicine)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, domainMedicine)
 }

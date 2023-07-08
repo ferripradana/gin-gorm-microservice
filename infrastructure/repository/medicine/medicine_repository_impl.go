@@ -1,6 +1,8 @@
 package medicine
 
 import (
+	"encoding/json"
+	"gin-gorm-microservice/domain/errors"
 	"gin-gorm-microservice/domain/medicine"
 	"gorm.io/gorm"
 )
@@ -48,16 +50,27 @@ func (m *MedicineRepositoryImpl) GetAll(page int64, limit int64) (*PaginationRes
 	}, nil
 }
 
-func (m *MedicineRepositoryImpl) Create(newMedicine *medicine.Medicine) (*medicine.Medicine, error) {
+func (m *MedicineRepositoryImpl) Create(newMedicine *medicine.Medicine) (createdMedicine *medicine.Medicine, err error) {
 	medicine := fromDomainMapper(newMedicine)
 	tx := m.DB.Create(medicine)
 
 	if tx.Error != nil {
-
+		byteErr, _ := json.Marshal(tx.Error)
+		var newError errors.GormErr
+		err = json.Unmarshal(byteErr, &newError)
+		if err != nil {
+			return createdMedicine, err
+		}
+		switch newError.Number {
+		case 1062:
+			err = errors.NewAppErrorWithType(errors.ResourceAlreadyExists)
+		default:
+			err = errors.NewAppErrorWithType(errors.UnknownError)
+		}
+		return createdMedicine, err
 	}
-	createdMedicine := medicine.toDomainMapper()
+	createdMedicine = medicine.toDomainMapper()
 	return createdMedicine, nil
-
 }
 
 func (m *MedicineRepositoryImpl) GetById(id int) (*medicine.Medicine, error) {
