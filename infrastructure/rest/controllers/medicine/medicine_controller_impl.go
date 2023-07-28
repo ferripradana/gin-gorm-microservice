@@ -65,3 +65,20 @@ func (controller *MedicineControllerImpl) NewMedicine(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, domainMedicine)
 }
+
+func (controller *MedicineControllerImpl) GetMedicinesById(ctx *gin.Context) {
+	medicineId, err := strconv.Atoi(ctx.Param("id"))
+	if err != nil {
+		appError := errors.NewAppErrorImpl(err, errors.ValidationError)
+		_ = ctx.Error(appError)
+		return
+	}
+
+	domainMedicine, err := controller.Service.GetById(medicineId)
+	if err != nil {
+		appError := errors.NewAppErrorImpl(err, errors.ValidationError)
+		_ = ctx.Error(appError)
+		return
+	}
+	ctx.JSON(http.StatusOK, domainMedicine)
+}

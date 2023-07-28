@@ -35,3 +35,7 @@ func (service *MedicineServiceImpl) Create(medicine *NewMedicine) (*medicineDoma
 	medicineToDomain := medicine.toDomainMapper()
 	return service.MedicineRepository.Create(medicineToDomain)
 }
+
+func (service *MedicineServiceImpl) GetById(id int) (*medicineDomain.Medicine, error) {
+	return service.MedicineRepository.GetById(id)
+}

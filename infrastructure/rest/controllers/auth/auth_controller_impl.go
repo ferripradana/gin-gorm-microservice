@@ -2,6 +2,7 @@ package auth
 
 import (
 	authService "gin-gorm-microservice/application/service/auth"
+	"gin-gorm-microservice/domain/errors"
 	"gin-gorm-microservice/infrastructure/rest/controllers"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -21,7 +22,8 @@ func (controller *AuthControllerImpl) Login(ctx *gin.Context) {
 	var request LoginRequest
 
 	if err := controllers.BindJSON(ctx, &request); err != nil {
-		_ = ctx.Error(err)
+		appError := errors.NewAppErrorImpl(err, errors.ValidationError)
+		_ = ctx.Error(appError)
 		return
 	}
 
@@ -32,7 +34,8 @@ func (controller *AuthControllerImpl) Login(ctx *gin.Context) {
 
 	authDataUser, err := controller.AuthService.Login(user)
 	if err != nil {
-		_ = ctx.Error(err)
+		appError := errors.NewAppErrorImpl(err, errors.NotAuthorized)
+		_ = ctx.Error(appError)
 		return
 	}
 	ctx.JSON(http.StatusOK, authDataUser)

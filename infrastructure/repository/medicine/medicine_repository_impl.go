@@ -74,8 +74,19 @@ func (m *MedicineRepositoryImpl) Create(newMedicine *medicine.Medicine) (created
 }
 
 func (m *MedicineRepositoryImpl) GetById(id int) (*medicine.Medicine, error) {
-	//TODO implement me
-	panic("implement me")
+	var _medicine Medicine
+	err := m.DB.Where("id = ?", id).First(&_medicine).Error
+
+	if err != nil {
+		switch err.Error() {
+		case gorm.ErrRecordNotFound.Error():
+			err = errors.NewAppErrorWithType(errors.NotFound)
+		default:
+			err = errors.NewAppErrorWithType(errors.UnknownError)
+		}
+		return &medicine.Medicine{}, err
+	}
+	return _medicine.toDomainMapper(), nil
 }
 
 func (m *MedicineRepositoryImpl) GetOneByMap(medicineMap map[string]interface{}) (*medicine.Medicine, error) {

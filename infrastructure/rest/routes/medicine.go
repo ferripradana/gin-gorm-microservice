@@ -12,5 +12,6 @@ func MedicineRoutes(router *gin.RouterGroup, controller medicine.MedicineControl
 	{
 		routerMedicine.GET("/", controller.GetAllMedicines)
 		routerMedicine.POST("/", controller.NewMedicine)
+		routerMedicine.GET("/:id", controller.GetMedicinesById)
 	}
 }
