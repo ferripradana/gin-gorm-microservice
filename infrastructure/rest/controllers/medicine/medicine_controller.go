@@ -7,4 +7,5 @@ type MedicineController interface {
 	NewMedicine(ctx *gin.Context)
 	GetMedicinesById(ctx *gin.Context)
 	UpdateMedicine(ctx *gin.Context)
+	DeleteMedicine(ctx *gin.Context)
 }

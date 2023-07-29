@@ -7,4 +7,5 @@ type MedicineService interface {
 	Create(medicine *NewMedicine) (*medicine.Medicine, error)
 	GetById(id int) (*medicine.Medicine, error)
 	Update(id int, medicineMap map[string]interface{}) (*medicine.Medicine, error)
+	Delete(id int) error
 }

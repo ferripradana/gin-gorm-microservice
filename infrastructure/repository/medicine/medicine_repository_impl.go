@@ -126,7 +126,16 @@ func (m *MedicineRepositoryImpl) Update(id int, medicineMap map[string]interface
 	return _medicine.toDomainMapper(), err
 }
 
-func (m *MedicineRepositoryImpl) Delete(id int) error {
-	//TODO implement me
-	panic("implement me")
+func (m *MedicineRepositoryImpl) Delete(id int) (err error) {
+	tx := m.DB.Delete(&medicine.Medicine{}, id)
+	if tx.Error != nil {
+		err = errors.NewAppErrorImpl(err, errors.UnknownError)
+		return
+	}
+
+	if tx.RowsAffected == 0 {
+		err = errors.NewAppErrorWithType(errors.NotFound)
+	}
+
+	return
 }

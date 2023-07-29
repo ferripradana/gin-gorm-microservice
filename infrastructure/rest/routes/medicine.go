@@ -14,5 +14,6 @@ func MedicineRoutes(router *gin.RouterGroup, controller medicine.MedicineControl
 		routerMedicine.POST("/", controller.NewMedicine)
 		routerMedicine.GET("/:id", controller.GetMedicinesById)
 		routerMedicine.PUT("/:id", controller.UpdateMedicine)
+		routerMedicine.DELETE("/:id", controller.DeleteMedicine)
 	}
 }

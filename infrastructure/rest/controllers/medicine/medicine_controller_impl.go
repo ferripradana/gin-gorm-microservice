@@ -114,5 +114,20 @@ func (controller *MedicineControllerImpl) UpdateMedicine(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, _medicine)
+}
 
+func (controller *MedicineControllerImpl) DeleteMedicine(ctx *gin.Context) {
+	medicineId, err := strconv.Atoi(ctx.Param("id"))
+	if err != nil {
+		appError := errors.NewAppErrorImpl(goError.New("param id is necessary in the url"), errors.ValidationError)
+		_ = ctx.Error(appError)
+		return
+	}
+
+	err = controller.Service.Delete(medicineId)
+	if err != nil {
+		_ = ctx.Error(err)
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{"message": "Resource deleted successfully"})
 }

@@ -43,3 +43,7 @@ func (service *MedicineServiceImpl) GetById(id int) (*medicineDomain.Medicine, e
 func (service *MedicineServiceImpl) Update(id int, medicineMap map[string]interface{}) (*medicineDomain.Medicine, error) {
 	return service.MedicineRepository.Update(id, medicineMap)
 }
+
+func (service *MedicineServiceImpl) Delete(id int) error {
+	return service.MedicineRepository.Delete(id)
+}
