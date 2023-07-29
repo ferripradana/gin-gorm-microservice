@@ -1,8 +1,10 @@
 package medicine
 
 import (
+	goError "errors"
 	"gin-gorm-microservice/application/service/medicine"
 	"gin-gorm-microservice/domain/errors"
+	medicine2 "gin-gorm-microservice/domain/medicine"
 	"gin-gorm-microservice/infrastructure/rest/controllers"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -81,4 +83,36 @@ func (controller *MedicineControllerImpl) GetMedicinesById(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, domainMedicine)
+}
+
+func (controller *MedicineControllerImpl) UpdateMedicine(ctx *gin.Context) {
+	medicineId, err := strconv.Atoi(ctx.Param("id"))
+	if err != nil {
+		appError := errors.NewAppErrorImpl(goError.New("param id is necessary in the url"), errors.ValidationError)
+		_ = ctx.Error(appError)
+		return
+	}
+
+	var requestMap map[string]interface{}
+	err = controllers.BindJSON(ctx, &requestMap)
+	if err != nil {
+		appError := errors.NewAppErrorImpl(err, errors.ValidationError)
+		_ = ctx.Error(appError)
+		return
+	}
+
+	err = UpdateValidation(requestMap)
+	if err != nil {
+		_ = ctx.Error(err)
+		return
+	}
+	var _medicine *medicine2.Medicine
+	_medicine, err = controller.Service.Update(medicineId, requestMap)
+	if err != nil {
+		_ = ctx.Error(err)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, _medicine)
+
 }

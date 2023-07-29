@@ -95,8 +95,35 @@ func (m *MedicineRepositoryImpl) GetOneByMap(medicineMap map[string]interface{})
 }
 
 func (m *MedicineRepositoryImpl) Update(id int, medicineMap map[string]interface{}) (*medicine.Medicine, error) {
-	//TODO implement me
-	panic("implement me")
+	var _medicine Medicine
+	_medicine.ID = id
+
+	err := m.DB.Model(&_medicine).
+		Select("name", "description", "ean_code", "laboratory").
+		Updates(medicineMap).Error
+
+	if err != nil {
+		byteErr, _ := json.Marshal(err)
+		var newError errors.GormErr
+		err = json.Unmarshal(byteErr, &newError)
+		if err != nil {
+			err = errors.NewAppErrorImpl(err, errors.UnknownError)
+			return &medicine.Medicine{}, err
+		}
+		switch newError.Number {
+		case 1062:
+			err = errors.NewAppErrorWithType(errors.ResourceAlreadyExists)
+			return &medicine.Medicine{}, err
+		default:
+			err = errors.NewAppErrorWithType(errors.UnknownError)
+			return &medicine.Medicine{}, err
+		}
+	}
+	err = m.DB.Where("id = ?", id).First(&_medicine).Error
+	if err != nil {
+		err = errors.NewAppErrorWithType(errors.NotFound)
+	}
+	return _medicine.toDomainMapper(), err
 }
 
 func (m *MedicineRepositoryImpl) Delete(id int) error {

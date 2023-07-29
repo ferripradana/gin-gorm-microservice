@@ -39,3 +39,7 @@ func (service *MedicineServiceImpl) Create(medicine *NewMedicine) (*medicineDoma
 func (service *MedicineServiceImpl) GetById(id int) (*medicineDomain.Medicine, error) {
 	return service.MedicineRepository.GetById(id)
 }
+
+func (service *MedicineServiceImpl) Update(id int, medicineMap map[string]interface{}) (*medicineDomain.Medicine, error) {
+	return service.MedicineRepository.Update(id, medicineMap)
+}
