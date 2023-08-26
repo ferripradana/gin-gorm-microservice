@@ -12,6 +12,14 @@ curl --location --request POST 'http://localhost:8080/v1/auth/login' \
 }'
 ```
 
+INSERT USER
+```
+INSERT INTO `users` VALUES (1, 'yourusername', 'youremail@mail.com', 'firstname', 'lastname', 1, '$2a$10$UKIkKmrZZ7H1gnzwyUkJ2.XK2u2IpqplinOXwbKqLia5xl9dcBVRW', '2023-06-11 05:12:42', '2023-06-11 05:12:42');
+```
+```
+$2a$10$UKIkKmrZZ7H1gnzwyUkJ2.XK2u2IpqplinOXwbKqLia5xl9dcBVRW = Password
+```
+
 Refresh Token
 ```
 curl --location --request POST 'http://localhost:8080/v1/auth/access-token' \
