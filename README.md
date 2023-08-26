@@ -37,4 +37,24 @@ curl --location --request GET 'http://localhost:8080/v1/medicine?limit=10&page=1
 --header 'Content-Type: application/json' \
 ```
 
+Running Docker
+1. Open Aplication Root Folder in the terminal.
+2. Run Docker Compose Build
+```
+docker-compose build
+```
+3. Run Docker Compose Create
+```
+docker-compose create
+```
+4. Run Docker Compose Start
+```
+docker-compose start
+```
+
+Delete Container
+```
+docker-compose down
+```
+
 SWAGGER IS COMING SOON
