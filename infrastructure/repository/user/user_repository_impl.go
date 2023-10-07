@@ -1,6 +1,8 @@
 package user
 
 import (
+	"encoding/json"
+	"gin-gorm-microservice/domain/errors"
 	domainUser "gin-gorm-microservice/domain/user"
 	"gorm.io/gorm"
 )
@@ -25,4 +27,29 @@ func (u *UserRepositoryImpl) GetOneByMap(userMap map[string]interface{}) (*domai
 	}
 
 	return userRepo.toDomainMapper(), nil
+}
+
+func (u *UserRepositoryImpl) Create(newUser *domainUser.User) (createdUser *domainUser.User, err error) {
+	userRepo := fromDomainMapper(newUser)
+	txDb := u.DB.Create(userRepo)
+
+	if txDb.Error != nil {
+		byteErr, _ := json.Marshal(err)
+		var newError errors.GormErr
+		err = json.Unmarshal(byteErr, &newError)
+		if err != nil {
+			return createdUser, err
+		}
+		switch newError.Number {
+		case 1062:
+			err = errors.NewAppErrorWithType(errors.ResourceAlreadyExists)
+		case 0:
+			err = errors.NewAppErrorWithType(errors.ResourceAlreadyExists)
+		default:
+			err = errors.NewAppErrorWithType(errors.UnknownError)
+		}
+		return createdUser, err
+	}
+	createdUser = userRepo.toDomainMapper()
+	return createdUser, err
 }
