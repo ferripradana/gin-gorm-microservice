@@ -56,3 +56,21 @@ func (controller *AuthControllerImpl) GetAccessTokenByRefreshToken(ctx *gin.Cont
 	}
 	ctx.JSON(http.StatusOK, authDataUser)
 }
+
+func (controller *AuthControllerImpl) Register(ctx *gin.Context) {
+	var request RegisterRequest
+	if err := controllers.BindJSON(ctx, &request); err != nil {
+		appError := errors.NewAppErrorImpl(err, errors.ValidationError)
+		_ = ctx.Error(appError)
+		return
+	}
+
+	domainUser, err := controller.AuthService.Register(toAuthServiceMapper(&request))
+	if err != nil {
+		_ = ctx.Error(err)
+		return
+	}
+	registerResponse := domainToResponseMapper(domainUser)
+	registerResponse.Message = "Waiting Approval"
+	ctx.JSON(http.StatusOK, registerResponse)
+}

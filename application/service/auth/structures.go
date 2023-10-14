@@ -7,6 +7,14 @@ type LoginUser struct {
 	Password string
 }
 
+type RegisterUser struct {
+	UserName  string `example:"UserName"`
+	Email     string `example:"some@mail.com"`
+	FirstName string `example:"John"`
+	LastName  string `example:"Doe"`
+	Password  string `example:"SomeHashPass"`
+}
+
 type Auth struct {
 	AccessToken               string
 	RefreshToken              string

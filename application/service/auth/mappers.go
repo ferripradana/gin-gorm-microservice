@@ -22,3 +22,13 @@ func secAuthUserMapper(domainUser *userDomain.User, authInfo *Auth) *SecurityAut
 		},
 	}
 }
+
+func (registerUser *RegisterUser) toDomainMapper() *userDomain.User {
+	return &userDomain.User{
+		UserName:  registerUser.UserName,
+		Email:     registerUser.Email,
+		FirstName: registerUser.FirstName,
+		LastName:  registerUser.LastName,
+		Status:    false,
+	}
+}

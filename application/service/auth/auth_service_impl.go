@@ -3,6 +3,7 @@ package auth
 import (
 	"errors"
 	"gin-gorm-microservice/application/security/jwt"
+	domainUser "gin-gorm-microservice/domain/user"
 	"gin-gorm-microservice/infrastructure/repository/user"
 	"golang.org/x/crypto/bcrypt"
 	"time"
@@ -81,4 +82,14 @@ func (authServ *AuthServiceImpl) AccessTokenByRefreshToken(refreshToken string) 
 func CheckPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
+}
+
+func (authServ *AuthServiceImpl) Register(newUser *RegisterUser) (*domainUser.User, error) {
+	newUserDomain := newUser.toDomainMapper()
+	hash, err := bcrypt.GenerateFromPassword([]byte(newUser.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return &domainUser.User{}, err
+	}
+	newUserDomain.HashPassword = string(hash)
+	return authServ.UserRepository.Create(newUserDomain)
 }

@@ -10,5 +10,6 @@ func AuthRoutes(router *gin.RouterGroup, controller auth.AuthController) {
 	{
 		routerAuth.POST("/login", controller.Login)
 		routerAuth.POST("/access-token", controller.GetAccessTokenByRefreshToken)
+		routerAuth.POST("/register", controller.Register)
 	}
 }
