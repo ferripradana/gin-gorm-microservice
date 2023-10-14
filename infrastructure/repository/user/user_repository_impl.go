@@ -20,7 +20,7 @@ func NewUserRepositoryImpl(db *gorm.DB) UserRepository {
 func (u *UserRepositoryImpl) GetOneByMap(userMap map[string]interface{}) (*domainUser.User, error) {
 	var userRepo User
 
-	tx := u.DB.Where(userMap).Limit(1).Find(&userRepo)
+	tx := u.DB.Where(userMap).Where("status = ?", true).Limit(1).Find(&userRepo)
 	if tx.Error != nil {
 		err := tx.Error
 		return &domainUser.User{}, err
