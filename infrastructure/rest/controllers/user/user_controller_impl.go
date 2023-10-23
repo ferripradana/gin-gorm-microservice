@@ -6,6 +6,7 @@ import (
 	"gin-gorm-microservice/infrastructure/rest/controllers"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 type UserControllerImpl struct {
@@ -33,4 +34,22 @@ func (u *UserControllerImpl) NewUser(ctx *gin.Context) {
 	}
 	userResponse := domainToResponseMapper(domainUser)
 	ctx.JSON(http.StatusOK, userResponse)
+}
+
+func (u *UserControllerImpl) GetUserById(ctx *gin.Context) {
+	userId, err := strconv.Atoi(ctx.Param("id"))
+	if err != nil {
+		appError := errors.NewAppErrorImpl(err, errors.ValidationError)
+		_ = ctx.Error(appError)
+		return
+	}
+
+	domainUser, err := u.Service.GetById(userId)
+	if err != nil {
+		appError := errors.NewAppErrorImpl(err, errors.ValidationError)
+		_ = ctx.Error(appError)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, domainToResponseMapper(domainUser))
 }

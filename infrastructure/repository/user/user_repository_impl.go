@@ -53,3 +53,20 @@ func (u *UserRepositoryImpl) Create(newUser *domainUser.User) (createdUser *doma
 	createdUser = userRepo.toDomainMapper()
 	return createdUser, err
 }
+
+func (u *UserRepositoryImpl) GetById(id int) (*domainUser.User, error) {
+	var user User
+	err := u.DB.Where("id = ?", id).First(&user).Error
+
+	if err != nil {
+		switch err.Error() {
+		case gorm.ErrRecordNotFound.Error():
+			err = errors.NewAppErrorWithType(errors.NotFound)
+		default:
+			err = errors.NewAppErrorWithType(errors.UnknownError)
+		}
+		return &domainUser.User{}, err
+	}
+
+	return user.toDomainMapper(), nil
+}

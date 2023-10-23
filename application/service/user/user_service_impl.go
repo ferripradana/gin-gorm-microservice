@@ -27,3 +27,7 @@ func (userService *UserServiceImpl) Create(newUser *NewUser) (*domainUser.User, 
 	domain.HashPassword = string(hash)
 	return userService.UserRepository.Create(domain)
 }
+
+func (userService *UserServiceImpl) GetById(id int) (*domainUser.User, error) {
+	return userService.UserRepository.GetById(id)
+}

@@ -11,5 +11,6 @@ func UserRoutes(router *gin.RouterGroup, controller user.UserController) {
 	routerUser.Use(middlewares.AuthJWTMiddleware())
 	{
 		routerUser.POST("/", controller.NewUser)
+		routerUser.GET("/:id", controller.GetUserById)
 	}
 }
