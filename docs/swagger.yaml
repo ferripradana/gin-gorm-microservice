@@ -1,0 +1,10 @@
+definitions:
+  medicine.MessageResponse:
+    properties:
+      message:
+        type: string
+    type: object
+info:
+  contact: {}
+paths: {}
+swagger: "2.0"
