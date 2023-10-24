@@ -120,3 +120,47 @@ func (u *UserRepositoryImpl) Delete(id int) (err error) {
 
 	return nil
 }
+
+func (u *UserRepositoryImpl) Update(id int, userMap map[string]interface{}) (*domainUser.User, error) {
+	var _user User
+	_user.ID = id
+	userMap["user_name"] = userMap["user"]
+
+	err := u.DB.Where("id = ?", id).First(&_user).Error
+	if err != nil {
+		switch err.Error() {
+		case gorm.ErrRecordNotFound.Error():
+			err = errors.NewAppErrorWithType(errors.NotFound)
+		default:
+			err = errors.NewAppErrorWithType(errors.UnknownError)
+		}
+		return &domainUser.User{}, err
+	}
+
+	err = u.DB.Model(&_user).
+		Select("first_name", "last_name", "status", "user_name", "email").
+		Updates(userMap).Error
+
+	if err != nil {
+		byteErr, _ := json.Marshal(err)
+		var newError errors.GormErr
+		err = json.Unmarshal(byteErr, &newError)
+		if err != nil {
+			err = errors.NewAppErrorImpl(err, errors.UnknownError)
+			return &domainUser.User{}, err
+		}
+		switch newError.Number {
+		case 1062:
+			err = errors.NewAppErrorWithType(errors.ResourceAlreadyExists)
+			return &domainUser.User{}, err
+		default:
+			err = errors.NewAppErrorWithType(errors.UnknownError)
+			return &domainUser.User{}, err
+		}
+	}
+	err = u.DB.Where("id = ?", id).First(&_user).Error
+	if err != nil {
+		err = errors.NewAppErrorWithType(errors.NotFound)
+	}
+	return _user.toDomainMapper(), nil
+}

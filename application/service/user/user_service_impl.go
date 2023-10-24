@@ -51,3 +51,7 @@ func (userService *UserServiceImpl) GetAll(page int64, limit int64) (*Pagination
 func (userService *UserServiceImpl) Delete(id int) error {
 	return userService.UserRepository.Delete(id)
 }
+
+func (userService *UserServiceImpl) Update(id int, userMap map[string]interface{}) (*domainUser.User, error) {
+	return userService.UserRepository.Update(id, userMap)
+}

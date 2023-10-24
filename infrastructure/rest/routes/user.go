@@ -14,5 +14,6 @@ func UserRoutes(router *gin.RouterGroup, controller user.UserController) {
 		routerUser.GET("/:id", controller.GetUserById)
 		routerUser.GET("/", controller.GetAllUsers)
 		routerUser.DELETE("/:id", controller.DeleteUser)
+		routerUser.PUT("/:id", controller.UpdateUser)
 	}
 }

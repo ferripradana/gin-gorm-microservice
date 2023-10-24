@@ -7,4 +7,5 @@ type UserController interface {
 	GetUserById(ctx *gin.Context)
 	GetAllUsers(ctx *gin.Context)
 	DeleteUser(ctx *gin.Context)
+	UpdateUser(ctx *gin.Context)
 }
