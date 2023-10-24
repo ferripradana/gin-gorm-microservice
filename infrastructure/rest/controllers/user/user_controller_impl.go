@@ -1,6 +1,7 @@
 package user
 
 import (
+	goError "errors"
 	"gin-gorm-microservice/application/service/user"
 	"gin-gorm-microservice/domain/errors"
 	"gin-gorm-microservice/infrastructure/rest/controllers"
@@ -83,4 +84,20 @@ func (u *UserControllerImpl) GetAllUsers(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, usersResponse)
+}
+
+func (u *UserControllerImpl) DeleteUser(ctx *gin.Context) {
+	userId, err := strconv.Atoi(ctx.Param("id"))
+	if err != nil {
+		appError := errors.NewAppErrorImpl(goError.New("param id is necessary in the url"), errors.ValidationError)
+		_ = ctx.Error(appError)
+		return
+	}
+
+	err = u.Service.Delete(userId)
+	if err != nil {
+		_ = ctx.Error(err)
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{"message": "Resource deleted successfully"})
 }

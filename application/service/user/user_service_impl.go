@@ -47,3 +47,7 @@ func (userService *UserServiceImpl) GetAll(page int64, limit int64) (*Pagination
 		NumPages:   all.NumPages,
 	}, nil
 }
+
+func (userService *UserServiceImpl) Delete(id int) error {
+	return userService.UserRepository.Delete(id)
+}

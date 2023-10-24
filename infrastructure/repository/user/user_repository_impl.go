@@ -105,3 +105,18 @@ func (u *UserRepositoryImpl) GetAll(page int64, limit int64) (*PaginationResultU
 		NumPages:   numPages,
 	}, nil
 }
+
+func (u *UserRepositoryImpl) Delete(id int) (err error) {
+	tx := u.DB.Delete(&User{}, id)
+	if tx.Error != nil {
+		err = errors.NewAppErrorImpl(err, errors.UnknownError)
+		return err
+	}
+
+	if tx.RowsAffected == 0 {
+		err = errors.NewAppErrorWithType(errors.NotFound)
+		return err
+	}
+
+	return nil
+}
