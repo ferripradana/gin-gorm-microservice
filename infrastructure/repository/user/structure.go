@@ -1,6 +1,9 @@
 package user
 
-import "time"
+import (
+	domainUser "gin-gorm-microservice/domain/user"
+	"time"
+)
 
 // User is a struct that contains the user information
 type User struct {
@@ -22,11 +25,11 @@ func (*User) name() string {
 
 // PaginationResultUser is a struct that contains the pagination result for user
 type PaginationResultUser struct {
-	Data       []User
-	Total      int
-	Limit      int
-	Current    int
+	Data       *[]domainUser.User
+	Total      int64
+	Limit      int64
+	Current    int64
 	NextCursor uint
 	PrevCursor uint
-	NumPages   int
+	NumPages   int64
 }

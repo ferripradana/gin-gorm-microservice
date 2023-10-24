@@ -12,5 +12,6 @@ func UserRoutes(router *gin.RouterGroup, controller user.UserController) {
 	{
 		routerUser.POST("/", controller.NewUser)
 		routerUser.GET("/:id", controller.GetUserById)
+		routerUser.GET("/", controller.GetAllUsers)
 	}
 }

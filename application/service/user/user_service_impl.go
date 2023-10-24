@@ -31,3 +31,19 @@ func (userService *UserServiceImpl) Create(newUser *NewUser) (*domainUser.User, 
 func (userService *UserServiceImpl) GetById(id int) (*domainUser.User, error) {
 	return userService.UserRepository.GetById(id)
 }
+
+func (userService *UserServiceImpl) GetAll(page int64, limit int64) (*PaginationResultUser, error) {
+	all, err := userService.UserRepository.GetAll(page, limit)
+	if err != nil {
+		return nil, err
+	}
+	return &PaginationResultUser{
+		Data:       all.Data,
+		Total:      all.Total,
+		Limit:      all.Limit,
+		Current:    all.Current,
+		NextCursor: all.NextCursor,
+		PrevCursor: all.PrevCursor,
+		NumPages:   all.NumPages,
+	}, nil
+}

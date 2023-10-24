@@ -53,3 +53,34 @@ func (u *UserControllerImpl) GetUserById(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, domainToResponseMapper(domainUser))
 }
+
+func (u *UserControllerImpl) GetAllUsers(ctx *gin.Context) {
+	pageStr := ctx.DefaultQuery("page", "1")
+	limitStr := ctx.DefaultQuery("limit", "10")
+
+	page, err := strconv.ParseInt(pageStr, 10, 64)
+	if err != nil {
+		_ = ctx.Error(err)
+	}
+
+	limit, err := strconv.ParseInt(limitStr, 10, 64)
+	if err != nil {
+		_ = ctx.Error(err)
+	}
+
+	users, err := u.Service.GetAll(page, limit)
+	usersResponse := &PaginationResultUser{
+		Data:       mapFromDomainToResponse(users.Data),
+		Total:      users.Total,
+		Limit:      users.Limit,
+		Current:    users.Current,
+		NextCursor: users.NextCursor,
+		PrevCursor: users.PrevCursor,
+		NumPages:   users.NumPages,
+	}
+	if err != nil {
+		_ = ctx.Error(err)
+	}
+
+	ctx.JSON(http.StatusOK, usersResponse)
+}

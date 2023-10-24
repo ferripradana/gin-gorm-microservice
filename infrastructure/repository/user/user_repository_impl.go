@@ -70,3 +70,38 @@ func (u *UserRepositoryImpl) GetById(id int) (*domainUser.User, error) {
 
 	return user.toDomainMapper(), nil
 }
+
+func (u *UserRepositoryImpl) GetAll(page int64, limit int64) (*PaginationResultUser, error) {
+	var users []User
+	var total int64
+
+	err := u.DB.Model(&User{}).Count(&total).Error
+	if err != nil {
+		return &PaginationResultUser{}, err
+	}
+
+	offset := (page - 1) * limit
+	err = u.DB.Limit(int(limit)).Offset(int(offset)).Find(&users).Error
+	if err != nil {
+		return &PaginationResultUser{}, err
+	}
+	numPages := (total + limit - 1) / limit
+	var nextCursor, prevCursor uint
+	if page < numPages {
+		nextCursor = uint(page + 1)
+	}
+
+	if page > 1 {
+		prevCursor = uint(page - 1)
+	}
+
+	return &PaginationResultUser{
+		Data:       arrayToDomainMapper(&users),
+		Total:      total,
+		Limit:      limit,
+		Current:    page,
+		NextCursor: nextCursor,
+		PrevCursor: prevCursor,
+		NumPages:   numPages,
+	}, nil
+}

@@ -12,7 +12,7 @@ type NewUser struct {
 }
 
 type PaginationResultUser struct {
-	Data       []domainUser.User
+	Data       *[]domainUser.User
 	Total      int64
 	Limit      int64
 	Current    int64
