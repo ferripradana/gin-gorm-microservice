@@ -58,3 +58,15 @@ docker-compose down
 ```
 
 SWAGGER IS COMING SOON
+![image](https://github.com/ferripradana/gin-gorm-microservice/assets/13129987/87be18ec-6cad-45f0-906f-54ba5bfaba4d)
+http://localhost:8080/v1/swagger/index.html
+
+```
+Install : go install github.com/swaggo/swag/cmd/swag@latest
+Package :
+1. go get -u github.com/swaggo/files
+2. go get -u github.com/swaggo/gin-swagger
+3. go get -u github.com/swaggo/swag
+4. swag init -g infrastructure/rest/routes/routes.go
+```
+
