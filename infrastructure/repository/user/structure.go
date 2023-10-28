@@ -14,7 +14,7 @@ type User struct {
 	LastName     string    `json:"last_name" example:"lastname"`
 	Status       bool      `json:"status" example:"false"`
 	HashPassword string    `json:"hash_password" example:"password"`
-	CreatedAt    time.Time `json:", omitempty" example:"2021-02-24 20:19:39" gorm:"autoCreateTime:mili"`
+	CreatedAt    time.Time `json:"updated_at,omitempty" example:"2021-02-24 20:19:39" gorm:"autoCreateTime:mili"`
 	UpdatedAt    time.Time `json:"updated_at,omitempty" example:"2021-02-24 20:19:39" gorm:"autoUpdateTime:mili"`
 }
 
